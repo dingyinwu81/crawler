@@ -17,7 +17,7 @@ public class Project1 {
         //文件放置的路径
         String path = "C:\\Users\\dyw\\Desktop\\crawler\\photo";
         //爬取的网站地址
-        String url = "http://blog.csdn.net/juewang_love";
+        String url = "http://wufu.info/";
         //获取内容
         String htmlContent = null;
         try {
@@ -29,13 +29,16 @@ public class Project1 {
         List<String> imgUrls = RegularUtils.getIMGUrl(htmlContent);
         //分别下载每个img
         imgUrls.forEach(imgUrl -> {
+            if (!imgUrl.startsWith("http")) {
+                imgUrl = url + imgUrl;
+            }
             String[] split = imgUrl.split("/");
             String imgName = split[split.length - 1];
             try {
                 File file1 = new File(path + "/" + imgName);
                 InputStream inputStream = CrawlerUtils.downLoadFromUrl(imgUrl);
                 IOUtils.saveFile(inputStream, file1);
-                System.out.println("success:" + imgName);
+                System.out.println("success:" + imgUrl);
             } catch (Exception e) {
                 System.out.println("fail:" + imgUrl);
             }

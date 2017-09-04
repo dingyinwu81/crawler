@@ -15,7 +15,9 @@ public class RegularUtils {
     //获取href正则
     private static final String AURL_REG = "href=\"(.*?)\"";
     //获取http开头，png|jpg|bmp|gif结尾的 正则
-    private static final String IMGSRC_REG = "[a-zA-z]+://[^\\s].*(?:png|jpg|bmp|gif)";
+    private static final String IMGSRC_REG = "[a-zA-z]+://[^\\s]*(?:png|jpg|bmp|gif)";
+    //获取没有以http开头，png|jpg|bmp|gif结尾的 正则
+    private static final String IMGSRC_REG1 = "/[^\\s]*(?:png|jpg|bmp|gif)";
 
     /**
      * 获取 A 标签的正则表达式
@@ -30,13 +32,19 @@ public class RegularUtils {
     /**
      * 获取 IMG 标签的正则表达式
      *
-     * @param html 匹配的内容
+     * @param html 匹配的内容html
      * @return List结果集
      */
     public static List<String> getIMGUrl(String html) {
-        List<String> imgUrl = match(IMGURL_REG, html);
-        return match(IMGSRC_REG, imgUrl);
+        //获取所有的<img开头的>结尾的字符串
+        List<String> imgUrls = match(IMGURL_REG, html);
+        //获取没有http开头的url
+        List<String> match1 = match(IMGSRC_REG1, imgUrls);
+        //获取http开头的url
+        match1.addAll(match(IMGSRC_REG, imgUrls));
+        return match1;
     }
+
     /**
      * 获取 A 标签的正则表达式
      *
