@@ -6,16 +6,15 @@ import com.dyw.crawler.util.IOUtils;
 import java.io.File;
 
 /**
- * 此包中的main方法
+ * 下载html内容
  * Created by dyw on 2017/9/1.
  */
 public class Project {
-
     public static void main(String[] args) {
         //文件放置的路径
         String path = "C:\\Users\\dyw\\Desktop\\crawler";
         //爬取的网站地址
-        String url = "http://blog.csdn.net/juewang_love";
+        String url = "http://yxpjw.vip/luyilu/2015/1012/1919.html";
         String fileRealName = path + "/index.html";
         File file = new File(fileRealName);
         //创建文件
@@ -38,4 +37,6 @@ public class Project {
             throw new RuntimeException("内容写入文件失败!", e);
         }
     }
+
+
 }

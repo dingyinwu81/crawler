@@ -1,8 +1,10 @@
 package com.dyw.crawler.util;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
@@ -38,4 +40,26 @@ public class CrawlerUtils {
         return sb.toString();
     }
 
+    /**
+     * 下载文件流
+     * @param urlStr url地址
+     * @return InputStream
+     */
+    public static InputStream downLoadFromUrl(String urlStr) throws IOException {
+        URL url = new URL(urlStr);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        //防止屏蔽程序抓取而返回403错误
+        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+        //设置超时间为3秒
+        conn.setConnectTimeout(3 * 1000);
+        conn.setRequestProperty("Accept",
+                "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*");
+        conn.setRequestProperty("Accept-Language", "zh-cn");
+        conn.setRequestProperty("UA-CPU", "x86");
+        conn.setRequestProperty("Accept-Encoding", "gzip");//为什么没有deflate呢
+        conn.setRequestProperty("Content-type", "text/html");
+        conn.setRequestProperty("Connection", "keep-alive");
+        //得到输入流
+        return conn.getInputStream();
+    }
 }
