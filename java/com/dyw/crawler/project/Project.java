@@ -14,7 +14,7 @@ public class Project {
         //文件放置的路径
         String path = "C:\\Users\\dyw\\Desktop\\crawler";
         //爬取的网站地址
-        String url = "http://yxpjw.vip/luyilu/2015/1012/1919.html";
+        String url = "http://blog.csdn.net/juewang_love";
         String fileRealName = path + "/index.html";
         File file = new File(fileRealName);
         //创建文件

@@ -1,12 +1,14 @@
 package com.dyw.crawler.util;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
 
 /**
  * 爬虫工具类
@@ -15,51 +17,50 @@ import java.net.URLConnection;
 public class CrawlerUtils {
 
     /**
-     * 获取html内容转成string输出。
+     * http请求设置消息头
+     *
+     * @param httpMethod http请求方法
+     */
+    private static void setHead(HttpMethod httpMethod) {
+        httpMethod.setRequestHeader("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
+        httpMethod.setRequestHeader("Content-Type", "Utf-8");
+        httpMethod.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
+    }
+
+    /**
+     * 获取html内容转成string输出（get方法）
      *
      * @param url url链接
      * @return 整个网页转成String字符串
      */
     public static String getHtml(String url) throws Exception {
-        URL url1 = new URL(url);//使用java.net.URL
-        URLConnection connection = url1.openConnection();//打开链接
-        InputStream in = connection.getInputStream();//获取输入流
-        InputStreamReader isr = new InputStreamReader(in);//流的包装
-        BufferedReader br = new BufferedReader(isr);
-
-        String line;
-        StringBuffer sb = new StringBuffer();
-        while ((line = br.readLine()) != null) {//整行读取
-            sb.append(line, 0, line.length());//添加到StringBuffer中
-            sb.append('\n');//添加换行符
+        InputStream inputStream = downLoadFromUrl(url);
+        BufferedReader br = new BufferedReader(new InputStreamReader(inputStream, "Utf-8"));
+        StringBuffer stringBuffer = new StringBuffer();
+        String str;
+        while ((str = br.readLine()) != null) {
+            stringBuffer.append(str);
+            stringBuffer.append('\n');//添加换行符
         }
-        //关闭各种流，先声明的后关闭
-        br.close();
-        isr.close();
-        in.close();
-        return sb.toString();
+        return stringBuffer.toString();
     }
 
     /**
-     * 下载文件流
+     * 获取文件流（get方法）
+     *
      * @param urlStr url地址
      * @return InputStream
      */
     public static InputStream downLoadFromUrl(String urlStr) throws IOException {
-        URL url = new URL(urlStr);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        //防止屏蔽程序抓取而返回403错误
-        conn.setRequestProperty("User-Agent", "Mozilla/4.0 (compatible; MSIE 5.0; Windows NT; DigExt)");
-        //设置超时间为3秒
-        conn.setConnectTimeout(3 * 1000);
-        conn.setRequestProperty("Accept",
-                "image/gif, image/x-xbitmap, image/jpeg, image/pjpeg, application/x-shockwave-flash, application/vnd.ms-powerpoint, application/vnd.ms-excel, application/msword, */*");
-        conn.setRequestProperty("Accept-Language", "zh-cn");
-        conn.setRequestProperty("UA-CPU", "x86");
-        conn.setRequestProperty("Accept-Encoding", "gzip");//为什么没有deflate呢
-        conn.setRequestProperty("Content-type", "text/html");
-        conn.setRequestProperty("Connection", "keep-alive");
-        //得到输入流
-        return conn.getInputStream();
+        //通过httpclient来代替urlConnection
+        HttpClient httpClient = new HttpClient();
+        HttpMethod httpMethod = new GetMethod(urlStr);
+        setHead(httpMethod);
+        int status = httpClient.executeMethod(httpMethod);
+        InputStream responseBodyAsStream = null;
+        if (status == HttpStatus.SC_OK) {
+            responseBodyAsStream = httpMethod.getResponseBodyAsStream();
+        }
+        return responseBodyAsStream;
     }
 }

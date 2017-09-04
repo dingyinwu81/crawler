@@ -15,7 +15,7 @@ import java.util.List;
 public class Project1 {
     public static void main(String[] args) {
         //文件放置的路径
-        String path = "C:\\Users\\dyw\\Desktop\\crawler";
+        String path = "C:\\Users\\dyw\\Desktop\\crawler\\photo";
         //爬取的网站地址
         String url = "http://blog.csdn.net/juewang_love";
         //获取内容
@@ -37,7 +37,7 @@ public class Project1 {
                 IOUtils.saveFile(inputStream, file1);
                 System.out.println("success:" + imgName);
             } catch (Exception e) {
-                System.out.println("fail:" + imgUrl + "" + imgName);
+                System.out.println("fail:" + imgUrl);
             }
         });
     }
