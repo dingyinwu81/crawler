@@ -39,7 +39,6 @@ public class CrawlerUtils {
             map.keySet().forEach(key -> httpMethod.setRequestHeader(key, map.get(key)));
         }
         //公共消息头(不同的网站消息头内容不一致)
-        httpMethod.setRequestHeader("Referer", "http://www.huhuba.cn/manage/admin/loginJsp.action;jsessionid=368926BC35B601272E1EDE2EAFF1A86D");
         httpMethod.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36");
         httpMethod.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
         httpMethod.setRequestHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8");
@@ -86,6 +85,41 @@ public class CrawlerUtils {
     }
 
     /**
+     * 获取文件流（get方法）
+     *
+     * @param urlStr url地址
+     * @return InputStream
+     */
+    public static InputStream downLoadFromUrl(String urlStr) throws IOException {
+        return downLoadFromUrl(urlStr, null);
+    }
+
+    /**
+     * 获取文件流（get方法）
+     *
+     * @param urlStr url地址
+     * @param map    消息头内容
+     * @return InputStream
+     */
+    public static InputStream downLoadFromUrl(String urlStr, Map<String, String> map) throws IOException {
+        //通过httpclient来代替urlConnection
+//        HttpHost proxy=new HttpHost("116.226.217.54", 9999);
+        HttpClient httpClient = new HttpClient();
+        HttpMethod httpMethod = new GetMethod(urlStr);
+//        HostConfiguration hostConfiguration = new HostConfiguration();
+//        hostConfiguration.setHost("116.226.217.54", 9999);
+//        httpClient.setHostConfiguration(hostConfiguration);
+        setHead(httpMethod, map);
+        int status = httpClient.executeMethod(httpMethod);
+        InputStream responseBodyAsStream = null;
+        if (status == HttpStatus.SC_OK) {
+            responseBodyAsStream = httpMethod.getResponseBodyAsStream();
+        }
+        return responseBodyAsStream;
+    }
+
+
+    /**
      * 登陆方法，获取cookie（post方法）
      *
      * @param url url链接
@@ -106,28 +140,5 @@ public class CrawlerUtils {
             cookie.append(c.toString() + ";");
         }
         return cookie.toString();
-    }
-
-    /**
-     * 获取文件流（get方法）
-     *
-     * @param urlStr url地址
-     * @return InputStream
-     */
-    public static InputStream downLoadFromUrl(String urlStr) throws IOException {
-        //通过httpclient来代替urlConnection
-//        HttpHost proxy=new HttpHost("116.226.217.54", 9999);
-        HttpClient httpClient = new HttpClient();
-        HttpMethod httpMethod = new GetMethod(urlStr);
-//        HostConfiguration hostConfiguration = new HostConfiguration();
-//        hostConfiguration.setHost("116.226.217.54", 9999);
-//        httpClient.setHostConfiguration(hostConfiguration);
-        setHead(httpMethod);
-        int status = httpClient.executeMethod(httpMethod);
-        InputStream responseBodyAsStream = null;
-        if (status == HttpStatus.SC_OK) {
-            responseBodyAsStream = httpMethod.getResponseBodyAsStream();
-        }
-        return responseBodyAsStream;
     }
 }
