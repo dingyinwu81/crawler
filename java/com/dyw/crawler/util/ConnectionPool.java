@@ -14,16 +14,23 @@ import java.util.Vector;
  * Created by dyw on 2017/9/11.
  */
 public class ConnectionPool {
-    private String jdbcDriver = ""; // 数据库驱动
-    private String dbUrl = ""; // 数据 URL
-    private String dbUsername = ""; // 数据库用户名
-    private String dbPassword = ""; // 数据库用户密码
+    private String jdbcDriver = "com.mysql.jdbc.Driver"; // 数据库驱动
+    private String dbUrl = "jdbc:mysql://localhost:3306/crawler?characterEncoding=utf8&useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC"; // 数据 URL
+    private String dbUsername = "root"; // 数据库用户名
+    private String dbPassword = "root"; // 数据库用户密码
     private String testTable = ""; // 测试连接是否可用的测试表名，默认没有测试表
     private int initialConnections = 10; // 连接池的初始大小
     private int incrementalConnections = 5;// 连接池自动增加的大小
     private int maxConnections = 50; // 连接池最大的大小
     private Vector connections = null; // 存放连接池中数据库连接的向量 , 初始时为 null
     // 它中存放的对象为 PooledConnection 型
+
+    /**
+     * 构造函数，
+     */
+    public ConnectionPool(){
+
+    }
 
     /**
      * 构造函数
