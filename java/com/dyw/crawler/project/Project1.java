@@ -21,7 +21,7 @@ public class Project1 {
         //获取内容
         String htmlContent = null;
         try {
-            htmlContent = CrawlerUtils.getHtml(url);
+            htmlContent = CrawlerUtils.get(url);
         } catch (Exception e) {
             throw new RuntimeException("获取内容失败!", e);
         }
